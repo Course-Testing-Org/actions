@@ -17,6 +17,11 @@ on:
   workflow_call:
     # allow reuse of this workflow in other repos
     inputs:
+      test-input:
+        description: A test value to test input passing
+        required: false
+        default: 'no test input was given'
+        type: string
       comment-enable:
         description: Create a PR comment with image tags and labels
         required: false
@@ -105,6 +110,9 @@ on:
       image-tag:
         description: "single-use image tag for GHA runs"
         value: ${{ jobs.build-image.outputs.image-tag }}
+      test-output:
+        description: "A test output value that shows a step result"
+        value: ${{ jobs.build-image.outputs.job-test-output }}
 
 # set permissions here for what's required to run this Reusable Workflow
 # However, permisions are set in the GITHUB_TOKEN by the **calling** workflow
@@ -126,7 +134,7 @@ jobs:
     outputs:
       # only outputs the unique gha- image tag that's unique to each GHA run
       image-tag: ${{ steps.image-tag.outputs.image-tag }}
-
+      job-test-output: ${{ steps.set-step-output.outputs.step-output }}
     steps:
 
         # we need qemu and buildx so we can build multiple platforms later
@@ -229,3 +237,8 @@ jobs:
         run: |
           # shellcheck disable=SC2086
           echo "image-tag=${{ steps.docker_meta.outputs.version }}" >> $GITHUB_OUTPUT
+      - name: test setting output value
+        id: set-step-output
+        run: |
+          echo "step-output='final step reached'" >> $GITHUB_OUTPUT
+    
