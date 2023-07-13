@@ -240,6 +240,6 @@ jobs:
       - name: test setting output value
         id: set-step-output
         run: |
-          echo "test input: ${{ inputs.test-input }}
+          echo "test input: ${{ inputs.test-input }}"
           echo "step-output='final step reached'" >> $GITHUB_OUTPUT
     
